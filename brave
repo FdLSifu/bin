@@ -1,0 +1,1 @@
+firejail --private-tmp --private=~/.firejail/brave-perso brave $@

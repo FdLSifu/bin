@@ -1,0 +1,6 @@
+cd ~/.todo
+git commit -m update-todo todo.txt
+git commit -m update-done done.txt
+git push
+cd -
+
