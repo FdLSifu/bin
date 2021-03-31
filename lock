@@ -1,0 +1,5 @@
+#!/bin/sh
+dunstctl set-paused true
+if [[ $(date +%H) -ge 20 || $(date +%H) -le 7 ]]; then kbd_lightup; else kbd_lightoff; fi
+i3lock -i ~/.rand.jpg -C --nofork
+dunstctl set-paused false

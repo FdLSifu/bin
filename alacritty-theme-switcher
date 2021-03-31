@@ -1,0 +1,3 @@
+cd /home/fdlsifu/Documents/tools/alacritty-theme-switcher
+ruby theme.rb -list | fzf | xargs ruby theme.rb -set
+cd - > /dev/null
