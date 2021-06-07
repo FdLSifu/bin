@@ -107,8 +107,8 @@ Comment[zh_HK]=連線到網際網路
 Comment[zh_TW]=連線到網際網路
 StartupNotify=true
 StartupWMClass=brave-logitech
-TryExec=brave-logitech
-Exec=brave-logitech %U
+TryExec=/home/fdlsifu/.local/bin/brave-logitech
+Exec=/home/fdlsifu/.local/bin/brave-logitech %U
 Terminal=false
 Icon=brave-logitech
 Type=Application
@@ -118,9 +118,8 @@ Actions=new-window;new-private-window;
 
 [Desktop Action new-window]
 Name=New Window
-Exec=brave-logitech
+Exec=/home/fdlsifu/.local/bin/brave-logitech
 
 [Desktop Action new-private-window]
 Name=New Incognito Window
-Exec=brave-logitech --incognito
-MimeType=x-scheme-handler/unknown;x-scheme-handler/about;text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
+Exec=/home/fdlsifu/.local/bin/brave-logitech --incognito

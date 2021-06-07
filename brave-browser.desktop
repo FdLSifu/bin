@@ -107,8 +107,8 @@ Comment[zh_HK]=連線到網際網路
 Comment[zh_TW]=連線到網際網路
 StartupNotify=true
 StartupWMClass=brave
-TryExec=brave
-Exec=brave %U
+TryExec=/home/fdlsifu/.local/bin/brave
+Exec=/home/fdlsifu/.local/bin/brave %U
 Terminal=false
 Icon=brave
 Type=Application
@@ -117,9 +117,8 @@ Actions=new-window;new-private-window;
 
 [Desktop Action new-window]
 Name=New Window
-Exec=brave
+Exec=/home/fdlsifu/.local/bin/brave
 
 [Desktop Action new-private-window]
 Name=New Incognito Window
-Exec=brave --incognito
-MimeType=x-scheme-handler/unknown;text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
+Exec=/home/fdlsifu/.local/bin/brave --incognito

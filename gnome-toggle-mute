@@ -1,0 +1,8 @@
+#!/bin/sh
+if $(gsettings get org.gnome.desktop.notifications show-banners)
+then 
+    gsettings set org.gnome.desktop.notifications show-banners false 
+else 
+    gsettings set org.gnome.desktop.notifications show-banners true
+    notify-send "Notifications are enabled"
+fi

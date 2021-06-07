@@ -1,1 +1,2 @@
-firejail --private-tmp --private=~/.firejail/brave-logitech brave --class=brave-logitech $@
+#!/bin/sh
+firejail --private-tmp --private=~/.firejail/brave-logitech /usr/bin/brave --class=brave-logitech $@

@@ -1,1 +1,2 @@
-firejail --private-tmp --private=~/.firejail/brave-perso brave $@
+#!/bin/sh
+firejail --private-tmp --private=~/.firejail/brave-perso /usr/bin/brave $@
