@@ -1,0 +1,11 @@
+#!/bin/sh
+xrandr --output eDP1 --off --output DP1 --off --output DP1-2 --off --output DP2 --off --output HDMI1 --off --output VIRTUAL1 --off
+xrandr --output DP1-3 --mode 1920x1080 --scale 2x2 --rate 75 --pos 0x1080 
+xrandr --output DP1-1 --scale 1.5x1.5 --mode 3840x2160 --primary --pos 3840x0 
+xrandr --output HDMI2 --scale 2x2 --mode 1920x1080 --rate 75 --pos 9600x1080
+
+echo "Xft/DPI 196608" > ~/.xsettingsd
+killall -HUP xsettingsd
+
+cp ~/.Xresources192 ~/.Xresources
+xrdb -merge ~/.Xresources

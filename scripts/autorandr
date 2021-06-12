@@ -1,0 +1,66 @@
+TRUE=1
+FALSE=0
+
+export XAUTHORITY=/home/fdlsifu/.Xauthority
+export DISPLAY=:0.0
+xhost +
+
+XRANDR=$(xrandr)
+LOG=/tmp/log_
+
+echo $XRANDR >> $LOG
+
+echo $(id) >> $LOG
+
+lid_closed() {
+    if [[ $(cat /proc/acpi/button/lid/LID/state) == *"closed"* ]]
+    then
+        echo "lid closed" >> $LOG
+        return $TRUE
+    else
+        echo "lid open" >> $LOG
+        return $FALSE
+    fi
+}
+
+hdmi_plugged() {
+    if [[ $XRANDR == *"HDMI2 connected"* ]]
+    then
+        echo "hdmi plugged" >> $LOG
+        return $TRUE
+    else
+        echo "hdmi unplugged" >> $LOG
+        return $FALSE
+    fi
+}
+
+docked() {
+    if [[ $XRANDR == *"DP1-1 connected"* ]]
+    then
+        echo "docked" >> $LOG
+        return $TRUE
+    else
+        echo "laptop" >> $LOG
+        return $FALSE
+    fi
+}
+
+docked
+if [[ $? == $TRUE ]]
+then
+    hdmi_plugged
+    if [[ $? == $TRUE ]]
+    then
+        echo "desktop 3 screen" >> $LOG
+        /home/fdlsifu/Documents/tools/scripts/desktop-3screen
+    else
+        echo "desktop 2 screen" >> $LOG
+        /home/fdlsifu/Documents/tools/scripts/desktop-2screen
+    fi
+else
+    echo "laptop script" >> $LOG
+    /home/fdlsifu/Documents/tools/scripts/laptop
+fi
+
+i3-msg restart
+nitrogen --restore

@@ -1,0 +1,9 @@
+#!/bin/sh
+xrandr --auto
+xrandr --output eDP1 --scale 1x1
+
+echo "Xft/DPI 98304" > ~/.xsettingsd
+killall -HUP xsettingsd
+
+cp ~/.Xresources96 ~/.Xresources
+xrdb -merge ~/.Xresources
