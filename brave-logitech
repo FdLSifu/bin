@@ -1,2 +1,2 @@
 #!/bin/sh
-firejail --private-tmp --private=~/.firejail/brave-logitech /usr/bin/brave --class=brave-logitech $@
+firejail --private-tmp --private=~/.firejail/brave-logitech /usr/bin/brave-browser --class=brave-logitech $@
