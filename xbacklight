@@ -1,0 +1,41 @@
+#!/usr/bin/python3
+
+import os
+import sys
+
+cmd= "dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1/session/auto  org.freedesktop.login1.Session.SetBrightness string:backlight string:intel_backlight uint32:"
+
+maxfn = "/sys/class/backlight/intel_backlight/max_brightness"
+f = open(maxfn,'r')
+bright_max = int(f.read())
+f.close()
+
+curfn = "/sys/class/backlight/intel_backlight/brightness"
+f = open(curfn,'r')
+bright = int(f.read())
+f.close()
+
+if len(sys.argv) < 2 :
+    print(100*bright/bright_max)
+    exit()
+
+elif sys.argv[1] == "-dec" or sys.argv[1] == "-inc":
+    try:
+        value = int(sys.argv[2])
+
+        curv = (100*bright/bright_max)
+        if sys.argv[1] == "-dec":
+            curv -= value
+        else:
+            curv += value
+
+        curv = curv*bright_max/100
+        os.system(cmd+str(curv))
+    except Exception as e:
+        print(e)
+        print("Usage: xbacklight [-inc n | -dec n]")
+    
+    exit()
+else:
+    print("Usage: xbacklight [-inc n | -dec n]")
+    exit()
