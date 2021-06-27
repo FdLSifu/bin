@@ -10,9 +10,9 @@ dunstctl set-paused true
 
 #if [[ $(date +%H) -ge 20 || $(date +%H) -le 7 ]]; then kbd_lightup; else kbd_lightoff; fi
 
-
-i3lock -c 222222 --nofork
+i3lock-color --clock -c 222222 --nofork --time-color=#ffffffff --date-color=#ffffffff --date-str="%d %b %Y" --nofork
 
 dunstctl set-paused false
 
 revert
+
