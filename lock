@@ -3,16 +3,16 @@
 revert() {
     xset dpms 0 0 0
 }
-trap revert HUP INT TERM
-xset +dpms dpms 5 5 5
+#trap revert HUP INT TERM
+#xset +dpms dpms 5 5 5
 
 dunstctl set-paused true
 
 #if [[ $(date +%H) -ge 20 || $(date +%H) -le 7 ]]; then kbd_lightup; else kbd_lightoff; fi
 
-i3lock-color --clock -c 222222 --nofork --time-color=#ffffffff --date-color=#ffffffff --date-str="%d %b %Y" --nofork
+i3lock-color --clock -c 222222 --nofork --time-color=#ffffffff --date-color=#ffffffff --date-str="%d %b %Y | $(get_bat)" --nofork
 
 dunstctl set-paused false
 
-revert
+#revert
 
