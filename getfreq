@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+freq=$(cat /proc/cpuinfo | grep -i mhz | sed 's/.*: //' | sed 's/\..*//')
+sum=$((0))
+for f in $freq
+do
+	sum=$(($sum+$f))
+done
+echo $(($sum / $((8))))

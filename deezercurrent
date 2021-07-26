@@ -1,0 +1,23 @@
+#!/bin/bash
+
+
+# Get the current song by listing all windows and grepping the matching window with the pattern "- Deezer"
+
+song=$(wmctrl -l -p | grep '\- Deezer' | sed -n 's/.*'$HOSTNAME\ '//p')
+song2=$(xwininfo -root -children | grep " - Deezer" | sed "s/ - Deezer$PARTITION_COLUMN.*//" | sed "s/.*\"//")
+
+if [ "$song" ]; then
+	# Split the string and only show the name and artist
+	delimiter=' - Deezer';
+	array=()
+	while [[ $song ]]; do
+		array+=( "${song%%"$delimiter"*}" );
+        	song=${s#*"$delimiter"};
+    	done;
+    	echo $array;
+elif [ "$song2" ]; then
+	echo $song2
+else
+	exit 1
+fi;
+
