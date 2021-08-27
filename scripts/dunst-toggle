@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+dunstctl set-paused toggle
+pkill -SIGRTMIN+4 i3status-rs
+
+if [[ $(dunstctl is-paused) == "false" ]]
+then 
+    notify-send "Notifications on"
+fi
