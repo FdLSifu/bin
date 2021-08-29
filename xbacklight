@@ -23,14 +23,16 @@ elif sys.argv[1] == "-dec" or sys.argv[1] == "-inc":
     try:
         value = int(sys.argv[2])
 
-        curv = (100*bright/bright_max)
+        curv = int(100*bright/bright_max)
         if sys.argv[1] == "-dec":
-            curv -= value
+            curv = max(curv-value,0)
         else:
-            curv += value
+            curv = min(curv+value,100)
+        os.system('notify-send -u low "Brightness '+str(curv)+'" -h string:x-canonical-private-synchronous:anything -h int:value:'+str(curv))
 
         curv = curv*bright_max/100
         os.system(cmd+str(curv))
+
     except Exception as e:
         print(e)
         print("Usage: xbacklight [-inc n | -dec n]")
