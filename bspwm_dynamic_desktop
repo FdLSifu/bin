@@ -1,0 +1,220 @@
+#!/usr/bin/python3.8
+from subprocess import run
+import sys
+
+DEBUG = True
+flog = None
+
+def init_log():
+    global flog
+    flog = open("/tmp/bspwmlogs/bspwm_dynamic_desktop.log","a")
+
+def log(msg):
+    flog.write(str(msg))
+    flog.write('\n')
+    if DEBUG:
+        print("DEBUG:",msg)
+
+def exec(cmd):
+    p = run(cmd.split(' '), capture_output=True)
+    #log(p.stdout.decode())
+    return p.stdout.decode()
+
+
+#### MONITORS
+
+def get_monitors():
+    out = exec("bspc query -M --names")
+    monitors = out.split('\n')[:-1]
+    return monitors
+
+def get_focused_mon():
+    out = exec("bspc query -M --names -m focused")
+    mon = out[:-1]
+    return mon
+
+def transfer_desktops(src_mon,tgt_mon):
+    log("transfering "+src_mon+" to "+tgt_mon)
+    src_desktops = get_desktops(src_mon)
+    tgt_desktops = get_desktops(tgt_mon)
+
+    index_tgt = 1
+    tgt_desktop_bname = tgt_desktops[0][:-1]
+    for src_desktop in src_desktops:
+        while not is_empty_desktop(tgt_desktop_bname+str(index_tgt)) and tgt_desktop_bname+str(index_tgt) in tgt_desktops:
+            index_tgt += 1
+        log(tgt_desktops)
+        log(src_desktops)
+        tgt_desktop = tgt_desktop_bname+str(index_tgt)
+        log("target: "+tgt_desktop)
+        create_desktop(tgt_desktop,tgt_mon)
+        transfer_desktop_nodes(src_desktop,tgt_desktop)
+        tgt_desktops = get_desktops(tgt_mon)
+
+
+#### DESKTOPS
+tdname = None
+
+def get_desktops(m):
+    out = exec("bspc query -D --names -m "+m)
+    desktops = out.split('\n')[:-1]
+    return desktops
+
+def rename_desktops(desktops, m):
+    
+    if "Desktop" in desktops:
+        moddesktops = []
+        for i in range(len(desktops)):
+            desktop_name = m+"_"+str(i+1)
+            exec("bspc desktop "+desktops[i]+ " -n "+desktop_name)
+            moddesktops.append(desktop_name)
+        return moddesktops
+    else:
+        return desktops
+
+def is_empty_desktop(d):
+    if len(get_nodes(d)) == 0:
+        log(d + " is empty")
+    return len(get_nodes(d)) == 0
+
+def create_desktop(name,mon):
+    global workspaces
+    #check if desktop exists in workspaces
+    if name not in workspaces[mon]:
+        # create desktop
+        exec("bspc monitor "+mon+" -a "+name)
+        log("desktop " + name + " created.")
+
+    reorder_desktops(mon)
+
+def delete_desktop(mon,d):
+    exec("bspc desktop "+d+" -r")
+
+    reorder_desktops(mon)
+
+def reorder_desktops(mon):
+    global workspaces
+    get_workspaces()
+    sorted_desktop = sorted(workspaces[mon])
+    cmd = "bspc monitor " + mon + " -o"
+
+    for d in sorted_desktop:
+        cmd += " " + d
+    log(cmd)
+    exec(cmd)
+
+def transfer_desktop_nodes(src_desktop,tgt_desktop):
+    log("transfering desktop "+src_desktop+" to "+tgt_desktop)
+    nodes = get_nodes(src_desktop)
+    for n in nodes:
+        log("node "+n+"")
+        exec("bspc node "+n+" -d "+tgt_desktop)
+
+
+#### NODES
+def get_nodes(d):
+    out = exec("bspc query -N -d "+d)
+    return out.split('\n')[:-1]
+
+def get_focused_node():
+    out = exec("bspc query -N -n focused")
+    node = out[:-1]
+    return node
+
+#### WORKSPACES
+workspaces = {}
+
+def get_workspaces():
+    global workspaces
+    monitors = get_monitors()
+
+    for m in monitors:
+        workspaces[m] = rename_desktops(get_desktops(m),m)
+
+def clean_workspaces():
+    global workspaces
+    for m in workspaces:
+        for d in workspaces[m]:
+            nodes = get_nodes(d)
+            # delete empty desktops or badly name desktops
+            print(d,tdname)
+            if d != tdname and (len(nodes) == 0 or m not in d):
+                log("delete desktop "+d)
+                delete_desktop(m,d)
+        workspaces[m] = get_desktops(m)
+            
+def setup():
+    global workspaces
+
+    init_log()
+    get_workspaces()
+    log(workspaces)
+
+
+        
+def switchto(target_desktop):
+    global workspaces,tdname
+    mon = get_focused_mon()
+    log("monitor focus "+mon)
+
+    tdname = mon+"_"+target_desktop
+    
+    create_desktop(tdname,mon)
+    exec("bspc desktop "+tdname+" -f")
+    return
+
+def moveto(target_desktop):
+    global workspaces,tdname
+    node = get_focused_node()
+    mon = get_focused_mon()
+    tdname = mon+"_"+target_desktop
+    create_desktop(tdname,mon)
+
+    exec("bspc node "+node+" -d "+tdname)
+
+def usage():
+    print("Usage: bspwm_dynamic_desktop {[switch|move] [1-10]} {send desktop1 desktop2}")
+
+def main():
+    if len(sys.argv) != 3 and len(sys.argv) != 1 and len(sys.argv) != 4:
+        usage()
+        exit()
+
+
+
+    setup()
+
+   
+    if len(sys.argv) == 3:
+        try:
+            target_desktop = sys.argv[2]
+            i = int(target_desktop)
+            if i < 1 or i > 10:
+                raise()
+            cmd = sys.argv[1]
+            if cmd not in ["switch","move"]:
+                raise()
+        except:
+            usage()
+            exit()
+
+        if cmd == "switch":
+            switchto(target_desktop)
+        elif cmd == "move":
+            moveto(target_desktop)
+        else:
+            raise("BUG parsing error")
+    elif len(sys.argv) == 4:
+        try:
+            assert(sys.argv[1]=="send")
+            src_mon = sys.argv[2]
+            tgt_mon = sys.argv[3]
+            transfer_desktops(src_mon,tgt_mon)
+        except Exception as e:
+            print(e)
+            usage()
+            exit()
+    clean_workspaces()
+
+if __name__ == "__main__":
+    main()

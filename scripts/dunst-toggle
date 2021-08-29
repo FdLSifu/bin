@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+dunstctl set-paused toggle
+pkill -SIGRTMIN+4 i3status-rs
+
+if [[ $(dunstctl is-paused) == "false" ]]
+then 
+    notify-send "Notifications on"
+    echo hook:module/notification0 >>/tmp/polybar_mqueue.*
+else
+    echo hook:module/notification1 >>/tmp/polybar_mqueue.*
+fi
