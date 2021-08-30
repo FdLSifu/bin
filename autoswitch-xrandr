@@ -9,7 +9,9 @@ export PATH=/home/fdlsifu/.local/bin:$PATH
 export XAUTHORITY=/home/$USERNAME/.Xauthority 
 export DISPLAY=:0
 LOGFILE=/tmp/autoswitch-xrandr.log
-
+STAMP2K=/tmp/autoswitch-xrandr.2K
+STAMP4K=/tmp/autoswitch-xrandr.4K
+MULTIPLERUNS="no"
 connectedOutputs=$(xrandr | awk '$2 == "connected"{print $1}')
 
 echo $USER >> $LOGFILE
@@ -17,58 +19,78 @@ echo $USER >> $LOGFILE
 if [[ *"$connectedOutputs"* =~ "DP-1-1" ]] 
 then 
     echo "desktop mode" >> $LOGFILE
-    
-    xrandr --output DP-1-3 --mode 1920x1080 --pos 0x1080 --rate 74.97 --output DP-1-1 --mode 3840x2160 --pos 1920x0 --primary --rate 60 --output DP-1-2 --mode 1920x1080 --pos 5760x1080 --rate 74.97 --output eDP-1 --off
+    if [[ -f $STAMP4K ]]
+    then
+       echo "already 4K" >> $LOGFILE
+       MULTIPLERUNS="yes"
+    else
 
-    bspwm_dynamic_desktop send eDP-1 DP-1-1
-    bspc monitor eDP-1 -r
-    bspc wm -O DP-1-3 DP-1-1 DP-1-2
-#    bspc wm -o
-    
-    cp ~/.xsettingsd120 ~/.xsettingsd
-    pkill -HUP xsettingsd
+        xrandr --output DP-1-3 --mode 1920x1080 --pos 0x1080 --rate 74.97 --output DP-1-1 --mode 3840x2160 --pos 1920x0 --primary --rate 60 --output DP-1-2 --mode 1920x1080 --pos 5760x1080 --rate 74.97 --output eDP-1 --off
 
-    echo "Xft.dpi: 120" > ~/.Xresources
-    echo "Xcursor.theme: Breeze_Snow" >> ~/.Xresources
-    xrdb -merge ~/.Xresources
+        bspwm_dynamic_desktop send eDP-1 DP-1-1
+        bspc monitor eDP-1 -r
+        bspc wm -O DP-1-3 DP-1-1 DP-1-2
+    #    bspc wm -o
+        
+        cp ~/.xsettingsd120 ~/.xsettingsd
+        pkill -HUP xsettingsd
 
-    echo $(date) >> $LOGFILE
-    echo "4K" >> $LOGFILE
-    echo "" >> $LOGFILE
+        echo "Xft.dpi: 120" > ~/.Xresources
+        echo "Xcursor.theme: Breeze_Snow" >> ~/.Xresources
+        xrdb -merge ~/.Xresources
+
+        echo $(date) >> $LOGFILE
+        echo "4K" >> $LOGFILE
+        echo "" >> $LOGFILE
+    fi
+    touch $STAMP4K
+    rm $STAMP2K
 
 else
     echo "laptop mode" >> $LOGFILE
+    if [[ -f $STAMP2K ]]
+    then
+        echo "already 2K" >> $LOGFILE
+        MULTIPLERUNS="yes"
+    else
+        xrandr --output eDP-1 --primary --mode 1920x1200 --pos 7000x7000 --output DP-1-3 --off --output DP-1-1 --off --output DP-1-2 --off
 
-    xrandr --output eDP-1 --primary --mode 1920x1200 --pos 7000x7000 --output DP-1-3 --off --output DP-1-1 --off --output DP-1-2 --off
-
-    bspwm_dynamic_desktop send DP-1-1 eDP-1
-    bspwm_dynamic_desktop send DP-1-2 eDP-1
-    bspwm_dynamic_desktop send DP-1-3 eDP-1
-    bspc monitor DP-1-1 -r
-    bspc monitor DP-1-2 -r
-    bspc monitor DP-1-3 -r
-#    bspc wm -o
+        bspwm_dynamic_desktop send DP-1-1 eDP-1
+        bspwm_dynamic_desktop send DP-1-2 eDP-1
+        bspwm_dynamic_desktop send DP-1-3 eDP-1
+        bspc monitor DP-1-1 -r
+        bspc monitor DP-1-2 -r
+        bspc monitor DP-1-3 -r
+    #    bspc wm -o
 
 
-    cp ~/.xsettingsd96 ~/.xsettingsd
-    pkill -HUP xsettingsd
+        cp ~/.xsettingsd96 ~/.xsettingsd
+        pkill -HUP xsettingsd
 
-    echo "Xft.dpi: 96" > ~/.Xresources
-    echo "Xcursor.theme: Breeze_Snow" >> ~/.Xresources
-    xrdb -merge ~/.Xresources
+        echo "Xft.dpi: 96" > ~/.Xresources
+        echo "Xcursor.theme: Breeze_Snow" >> ~/.Xresources
+        xrdb -merge ~/.Xresources
 
-    echo $(date) >> $LOGFILE
-    echo "2K" >> $LOGFILE
-    echo "" >> $LOGFILE
+        echo $(date) >> $LOGFILE
+        echo "2K" >> $LOGFILE
+        echo "" >> $LOGFILE
+    fi
+    touch $STAMP2K
+    rm $STAMP4K
 fi
 
-bspwm_dynamic_desktop
-if [[ -f /tmp/frombspwm ]]
+if [[ $MULTIPLERUNS == "no" ]]
 then
-    echo "no restart"
-    rm /tmp/frombspwm
+    if [[ -f /tmp/frombspwm ]]
+    then
+        echo "no restart"
+        rm /tmp/frombspwm
+    else
+        touch /tmp/fromautorandr
+        echo "restart bspwm" >> $LOGFILE
+        bspc wm -r
+    fi
 else
-    touch /tmp/fromautorandr
-    bspc wm -r
-
+    rm /tmp/frombspwm
 fi
+bspwm_dynamic_desktop

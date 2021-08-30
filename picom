@@ -1,0 +1,2 @@
+#!/bin/sh
+~/Documents/tools/picom/build/src/picom --experimental-backends
