@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo "connect EC:81:93:0A:16:BE" | bluetoothctl
