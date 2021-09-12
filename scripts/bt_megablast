@@ -1,3 +1,9 @@
-#!/bin/sh
+#!/bin/bash
+
+if [[ $(lsmod | grep hci_uart) == "" ]] 
+then 
+    zenity --password | sudo -S modprobe hci_uart
+    sleep 5
+fi
 
 echo "connect EC:81:93:0A:16:BE" | bluetoothctl
