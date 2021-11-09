@@ -7,5 +7,5 @@ xrandr --output HDMI2 --scale 2x2 --mode 1920x1080 --rate 75 --pos 9600x1080
 echo "Xft/DPI 196608" > ~/.xsettingsd
 killall -HUP xsettingsd
 
-cp ~/.Xresources192 ~/.Xresources
-xrdb -merge ~/.Xresources
+cp ~/.Xresources192 ~/.Xresources/global
+xrdb -merge ~/.Xresources/global

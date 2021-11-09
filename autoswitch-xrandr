@@ -13,6 +13,7 @@ STAMP2K=/tmp/autoswitch-xrandr.2K
 STAMP4K=/tmp/autoswitch-xrandr.4K
 MULTIPLERUNS="no"
 connectedOutputs=$(xrandr | awk '$2 == "connected"{print $1}')
+XRE_FILE=~/.Xresources/global
 
 echo $USER >> $LOGFILE
 
@@ -35,9 +36,9 @@ then
         cp ~/.xsettingsd120 ~/.xsettingsd
         pkill -HUP xsettingsd
 
-        echo "Xft.dpi: 120" > ~/.Xresources
-        echo "Xcursor.theme: Breeze_Snow" >> ~/.Xresources
-        xrdb -merge ~/.Xresources
+        echo "Xft.dpi: 120" > XRE_FILE
+        echo "Xcursor.theme: Breeze_Snow" >> XRE_FILE
+        xrdb -merge XRE_FILE
 
         echo $(date) >> $LOGFILE
         echo "4K" >> $LOGFILE
@@ -67,9 +68,9 @@ else
         cp ~/.xsettingsd96 ~/.xsettingsd
         pkill -HUP xsettingsd
 
-        echo "Xft.dpi: 96" > ~/.Xresources
-        echo "Xcursor.theme: Breeze_Snow" >> ~/.Xresources
-        xrdb -merge ~/.Xresources
+        echo "Xft.dpi: 96" > XRE_FILE
+        echo "Xcursor.theme: Breeze_Snow" >> XRE_FILE
+        xrdb -merge XRE_FILE
 
         echo $(date) >> $LOGFILE
         echo "2K" >> $LOGFILE

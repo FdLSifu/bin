@@ -1,1 +1,31 @@
-upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep percentage | awk '{print $2}'
+#!/bin/bash
+
+MOUSE_DEVS=$(upower -e | grep mouse)
+
+for md in $MOUSE_DEVS
+do
+    if [[ $(upower -i $md | grep -i "master") ]]
+    then
+        MXM3=$md
+    elif [[ $(upower -i $md | grep -i "craft") ]]
+    then
+        CRAFT=$md
+    fi
+    if [[ $MXM3 && $CRAFT ]]
+    then
+        break
+    fi
+done
+
+
+if [[ $1 == "keyboard" ]]
+then
+    DEV=$CRAFT
+elif [[ $1 == "mouse" ]]
+then
+    DEV=$MXM3
+else
+    DEV="/org/freedesktop/UPower/devices/battery_BAT0"
+fi
+
+upower -i $DEV | grep percentage | awk '{print $2}'

@@ -7,5 +7,5 @@ xrandr --output HDMI2 --off
 echo "Xft/DPI 196608" > ~/.xsettingsd
 killall -HUP xsettingsd
 
-cp ~/.Xresources192 ~/.Xresources
-xrdb -merge ~/.Xresources
+cp ~/.Xresources192 ~/.Xresources/global
+xrdb -merge ~/.Xresources/global
