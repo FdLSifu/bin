@@ -36,9 +36,9 @@ then
         cp ~/.xsettingsd120 ~/.xsettingsd
         pkill -HUP xsettingsd
 
-        echo "Xft.dpi: 120" > XRE_FILE
-        echo "Xcursor.theme: Breeze_Snow" >> XRE_FILE
-        xrdb -merge XRE_FILE
+        echo "Xft.dpi: 120" > $XRE_FILE
+        echo "Xcursor.theme: Breeze_Snow" >> $XRE_FILE
+        xrdb -merge $XRE_FILE
 
         echo $(date) >> $LOGFILE
         echo "4K" >> $LOGFILE
@@ -68,9 +68,9 @@ else
         cp ~/.xsettingsd96 ~/.xsettingsd
         pkill -HUP xsettingsd
 
-        echo "Xft.dpi: 96" > XRE_FILE
-        echo "Xcursor.theme: Breeze_Snow" >> XRE_FILE
-        xrdb -merge XRE_FILE
+        echo "Xft.dpi: 96" > $XRE_FILE
+        echo "Xcursor.theme: Breeze_Snow" >> $XRE_FILE
+        xrdb -merge $XRE_FILE
 
         echo $(date) >> $LOGFILE
         echo "2K" >> $LOGFILE
