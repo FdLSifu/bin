@@ -6,8 +6,9 @@ then
     sleep 5
 fi
 
+echo "power on" | bluetoothctl
 # Jaybird 2
-#echo "connect C0:28:8D:A9:7E:8D" | bluetoothctl
+echo "connect C0:28:8D:A9:7E:8D" | bluetoothctl
 
 # Tune wireless 
 #echo "connect C0:28:8D:AF:D3:CF" | bluetoothctl

@@ -1,4 +1,4 @@
-#!/usr/bin/python3.8
+#!/usr/bin/python3
 from subprocess import run,PIPE
 import json
 import time
@@ -36,7 +36,11 @@ while(True):
             wall = DIR+WALLEVE3
         else:
             wall = DIR+WALLNIGHT
-        run(['gsettings', 'set' ,'org.gnome.desktop.background', 'picture-uri', "'file://"+wall+"'"])
+
+        # gnome
+        #run(['gsettings', 'set' ,'org.gnome.desktop.background', 'picture-uri', "'file://"+wall+"'"])
+        # else
+        run(['feh', '--bg-fill' ,wall])
         time.sleep(5*60) # sleep 5 minutes
     except:
         print("Exception")
