@@ -2,7 +2,7 @@
 from subprocess import run,PIPE
 import json
 import time
-
+import signal 
 DIR="/home/fdlsifu/Pictures/"
 WALLMOR1="macos-catalina-mountains-island-daytime-stock-5k-6016x6016-188.jpg"
 WALLMOR2="macos-catalina-mountains-island-morning-stock-5k-6016x6016-4015.jpg"
@@ -13,35 +13,39 @@ WALLEVE2="macos-catalina-mountains-island-evening-twilight-sunset-6016x6016-4009
 WALLEVE3="macos-catalina-mountains-island-night-cold-stock-5k-6016x6016-4022.jpg"
 WALLNIGHT="macos-catalina-mountains-island-night-stock-5k-6016x6016-189.jpg"
 
+def set_wp(a,b):
+    current_h = time.gmtime().tm_hour
+
+    if current_h < 6 or current_h > 19:
+        wall = DIR+WALLNIGHT
+    elif current_h == 6:
+        wall = DIR+WALLMOR1
+    elif current_h == 7:
+        wall = DIR+WALLMOR2
+    elif current_h == 8:
+        wall = DIR+WALLMOR3
+    elif current_h > 8 and current_h < 17:
+        wall = DIR+WALLDAY
+    elif current_h == 17:
+        wall = DIR+WALLEVE1
+    elif current_h == 18:
+        wall = DIR+WALLEVE2
+    elif current_h == 19:
+        wall = DIR+WALLEVE3
+    else:
+        wall = DIR+WALLNIGHT
+
+    # gnome
+    #run(['gsettings', 'set' ,'org.gnome.desktop.background', 'picture-uri', "'file://"+wall+"'"])
+    # else
+    run(['feh', '--bg-fill' ,wall])
+
+signal.signal(signal.SIGUSR1,set_wp)
 
 while(True):
     try:
-        current_h = time.gmtime().tm_hour
-
-        if current_h < 6 or current_h > 19:
-            wall = DIR+WALLNIGHT
-        elif current_h == 6:
-            wall = DIR+WALLMOR1
-        elif current_h == 7:
-            wall = DIR+WALLMOR2
-        elif current_h == 8:
-            wall = DIR+WALLMOR3
-        elif current_h > 8 and current_h < 17:
-            wall = DIR+WALLDAY
-        elif current_h == 17:
-            wall = DIR+WALLEVE1
-        elif current_h == 18:
-            wall = DIR+WALLEVE2
-        elif current_h == 19:
-            wall = DIR+WALLEVE3
-        else:
-            wall = DIR+WALLNIGHT
-
-        # gnome
-        #run(['gsettings', 'set' ,'org.gnome.desktop.background', 'picture-uri', "'file://"+wall+"'"])
-        # else
-        run(['feh', '--bg-fill' ,wall])
-        time.sleep(5*60) # sleep 5 minutes
-    except:
-        print("Exception")
+       set_wp(0,0)
+       time.sleep(5*60) # sleep 5 minutes
+    except Exception as e:
+        print("Exception",e)
         continue

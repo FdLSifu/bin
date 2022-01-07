@@ -10,7 +10,20 @@ echo "power on" | bluetoothctl
 # Jaybird 2
 echo "connect C0:28:8D:A9:7E:8D" | bluetoothctl
 
-# Tune wireless 
-#echo "connect C0:28:8D:AF:D3:CF" | bluetoothctl
-# megablast
-#echo "connect EC:81:93:0A:16:BE" | bluetoothctl
+# Waiting connection
+i=0
+while [[ $i -lt 10  && -z "$(pactl list | grep -i jaybird)" ]]
+    do 
+        echo "waiting connection"
+        sleep 1
+        i=$((i+1))
+    done
+
+if [[ -n "$(pactl list | grep -i jaybird)" ]]
+then
+    echo "connected"
+    pactl set-default-sink bluez_sink.C0_28_8D_A9_7E_8D.a2dp_sink
+    echo "set by default"
+else
+    echo "timeout"
+fi

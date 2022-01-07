@@ -1,2 +1,2 @@
 #!/bin/sh
-/usr/bin/picom --experimental-backends
+/home/fdlsifu/Documents/tools/picom/build/src/picom --experimental-backends
