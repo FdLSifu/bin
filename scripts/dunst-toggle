@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 dunstctl set-paused toggle
-#pkill -SIGRTMIN+4 i3status-rs
+pkill -SIGRTMIN+4 i3status-rs
 #pkill -SIGUSR1 polybar
 
 if [[ $(dunstctl is-paused) == "false" ]]

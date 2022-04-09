@@ -1,2 +1,6 @@
 #!/bin/bash
-/home/fdlsifu/Documents/tools/picom/build/src/picom --experimental-backends
+until ~/Documents/tools/picom/build/src/picom --experimental-backends;
+do
+    echo "picom crashed with exit code $?. Respawning.." > /tmp/picom
+    sleep 2
+done

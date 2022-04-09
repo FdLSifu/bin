@@ -10,9 +10,11 @@ dunstctl set-paused true
 #if [[ $(date +%H) -ge 20 || $(date +%H) -le 7 ]]; then kbd_lightup; else kbd_lightoff; fi
 
 i3lock-color --clock -c 222222 --nofork --time-color=#ffffffff --date-color=#ffffffff --date-str="%d %b %Y | $(get_bat)" 
+#swaylock -c 555555 
 #slock -m "$(date +"%A %d %B %Y") | $(get_bat)"
 
-dunst-toggle
+dunstctl set-paused false
+notify-send "Notifications on"
 
 revert
 

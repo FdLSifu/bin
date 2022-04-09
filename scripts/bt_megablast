@@ -8,21 +8,29 @@ fi
 
 echo "power on" | bluetoothctl
 # Jaybird 2
-echo "connect C0:28:8D:A9:7E:8D" | bluetoothctl
+#echo "connect C0:28:8D:A9:7E:8D" | bluetoothctl
+# AirPods Pro
+if [[ -z "$(pactl list | grep -i airpods)" ]]
+then
+ 
+    echo "connect 5C:52:30:E2:59:97" | bluetoothctl
 
-# Waiting connection
-i=0
-while [[ $i -lt 10  && -z "$(pactl list | grep -i jaybird)" ]]
-    do 
-        echo "waiting connection"
-        sleep 1
-        i=$((i+1))
-    done
+    # Waiting connection
+    i=0
+    while [[ $i -lt 10  && -z "$(pactl list | grep -i jaybird)" ]]
+        do 
+            echo "waiting connection"
+            sleep 1
+            i=$((i+1))
+        done
+fi
 
-if [[ -n "$(pactl list | grep -i jaybird)" ]]
+
+if [[ -n "$(pactl list | grep -i airpods)" ]]
 then
     echo "connected"
-    pactl set-default-sink bluez_sink.C0_28_8D_A9_7E_8D.a2dp_sink
+#    pactl set-default-sink bluez_output.C0_28_8D_A9_7E_8D.a2dp-sink
+    pactl set-default-sink bluez_output.5C_52_30_E2_59_97.a2dp-sink
     echo "set by default"
 else
     echo "timeout"

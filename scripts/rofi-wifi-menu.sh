@@ -8,13 +8,14 @@ connected=$(nmcli -fields WIFI g)
 essid=""
 if [[ "$connected" =~ "enabled" ]]; then
 	toggle="睊  Disable Wi-Fi"
-        essid=$(nmcli --fields common | grep connected  | awk '{ print $4}')
+        essid=$(nmcli --fields common | grep connected  | awk 'NR==1 { print $4}')
 elif [[ "$connected" =~ "disabled" ]]; then
 	toggle="直  Enable Wi-Fi"
 fi
 
 # Use rofi to select wifi network
-chosen_network=$(echo -e "$toggle\n$wifi_list" | uniq -u | rofi -dmenu -i -selected-row 1 -p "Wi-Fi SSID ""["$essid"]" )
+title=$(echo "Wi-Fi SSID ""["$essid"]")
+chosen_network=$(echo -e "$toggle\n$wifi_list" | uniq -u | rofi -dmenu -i -selected-row 1 -p "$title")
 # Get name of connection
 chosen_id=$(echo "${chosen_network:3}" | xargs)
 

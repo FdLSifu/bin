@@ -1,1 +1,5 @@
-gp-saml-gui global-bic.logitech.com --gateway --sudo-openconnect
+#!/bin/bash
+
+GW="global-bic.logitech.com"
+
+echo $(/home/fdlsifu/Documents/tools/globalprotect-saml/dist/vpn_amd64_linux -gateway $GW)  | sudo openconnect --protocol=gp --cookie-on-stdin $GW --servercert pin-sha256:N9g4ZV8v/VN9bDAM3L1qobU9huQeYERF35uegJflmXM= --csd-wrapper=/home/fdlsifu/Documents/tools/globalprotect-saml/hipreport.sh
