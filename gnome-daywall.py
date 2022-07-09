@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from subprocess import run,PIPE
+import subprocess
 import json
 import time
 import signal 
@@ -34,11 +34,16 @@ def set_wp(a,b):
         wall = DIR+WALLEVE3
     else:
         wall = DIR+WALLNIGHT
-
+    subprocess.run(['/home/fdlsifu/.fehbg'])
+    xrandr = subprocess.Popen(['xrandr'],stdout=subprocess.PIPE)
+    res = subprocess.check_output(['awk', "/*/ {print $1;exit;}"],stdin=xrandr.stdout)
+    xrandr.wait()
+    res = res.decode()
+    subprocess.run(['convert','-gravity','center','-geometry',res+"^",'-crop',res+'+0+0',wall,'/tmp/current_wall.png'])
     # gnome
     #run(['gsettings', 'set' ,'org.gnome.desktop.background', 'picture-uri', "'file://"+wall+"'"])
     # else
-    run(['feh', '--bg-fill' ,wall])
+    subprocess.run(['feh', '--bg-fill' ,wall])
 
 signal.signal(signal.SIGUSR1,set_wp)
 

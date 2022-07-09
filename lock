@@ -1,20 +1,32 @@
-#!/bin/sh
+#!/bin/bash
 
 revert() {
     xset dpms 0 0 0
 }
 trap revert HUP INT TERM
-xset +dpms dpms 5 5 5
+#dbus-launch /snap/bin/slack
+xset +dpms dpms 10 20 30
 
-dunstctl set-paused true
+if [[ $(dunstctl is-paused) != "true" ]]
+then
+    managed_dunst=1
+fi
+
+if [[ $managed_dunst == 1 ]]
+then
+    dunstctl set-paused true
+fi
+
 #if [[ $(date +%H) -ge 20 || $(date +%H) -le 7 ]]; then kbd_lightup; else kbd_lightoff; fi
 
-i3lock-color --clock -c 222222 --nofork --time-color=#ffffffff --date-color=#ffffffff --date-str="%d %b %Y | $(get_bat)" 
+i3lock-color -i /tmp/current_wall.png --clock -c 222222 --nofork --time-color=#ffffffff --date-color=#ffffffff --date-str="%d %b %Y | $(get_bat)" 
 #swaylock -c 555555 
 #slock -m "$(date +"%A %d %B %Y") | $(get_bat)"
-
-dunstctl set-paused false
-notify-send "Notifications on"
+if [[ $managed_dunst == 1 ]]
+then
+    dunstctl set-paused false
+    notify-send "Notifications on"
+fi
 
 revert
 

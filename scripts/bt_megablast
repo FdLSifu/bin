@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# Airpods
+DEVNAME="airpods"
+DEVMAC="5C:52:30:E2:59:97"
+DEVPULSE="bluez_output.5C_52_30_E2_59_97.a2dp-sink"
+
+#Jaybird
+#DEVNAME="jaybird"
+#DEVMAC="C0:28:8D:A9:7E:8D"
+#DEVPULSE="bluez_output.C0_28_8D_A9_7E_8D.a2dp-sink"
+
 if [[ $(lsmod | grep hci_uart) == "" ]] 
 then 
     zenity --password | sudo -S modprobe hci_uart
@@ -7,17 +17,15 @@ then
 fi
 
 echo "power on" | bluetoothctl
-# Jaybird 2
-#echo "connect C0:28:8D:A9:7E:8D" | bluetoothctl
 # AirPods Pro
-if [[ -z "$(pactl list | grep -i airpods)" ]]
+if [[ -z "$(pactl list | grep -i $DEVNAME)" ]]
 then
  
-    echo "connect 5C:52:30:E2:59:97" | bluetoothctl
+    echo "connect $DEVMAC" | bluetoothctl
 
     # Waiting connection
     i=0
-    while [[ $i -lt 10  && -z "$(pactl list | grep -i jaybird)" ]]
+    while [[ $i -lt 10  && -z "$(pactl list | grep -i $DEVNAME)" ]]
         do 
             echo "waiting connection"
             sleep 1
@@ -26,11 +34,10 @@ then
 fi
 
 
-if [[ -n "$(pactl list | grep -i airpods)" ]]
+if [[ -n "$(pactl list | grep -i $DEVNAME)" ]]
 then
     echo "connected"
-#    pactl set-default-sink bluez_output.C0_28_8D_A9_7E_8D.a2dp-sink
-    pactl set-default-sink bluez_output.5C_52_30_E2_59_97.a2dp-sink
+    pactl set-default-sink $DEVPULSE
     echo "set by default"
 else
     echo "timeout"
